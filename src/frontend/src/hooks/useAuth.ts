@@ -16,8 +16,8 @@ const useAuth = (): UseAuthReturn => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // const localAPI = 'http://localhost:7772';
-  const devTunnelAPI = 'https://49kdgk28-7774.asse.devtunnels.ms';
+  const localAPI = 'http://localhost:7774';
+  // const devTunnelAPI = 'https://49kdgk28-7774.asse.devtunnels.ms';
 
   const login = async (niu: number, sandi: string) => {
     setLoading(true);
@@ -27,7 +27,7 @@ const useAuth = (): UseAuthReturn => {
     console.log('Sending Password:', sandi);
 
     try {
-      const response = await axios.post(`${devTunnelAPI}/api/auth`, { niu, sandi });
+      const response = await axios.post(`${localAPI}/api/auth`, { niu, sandi });
       const { token } = response.data;
 
       // Check if token is expired

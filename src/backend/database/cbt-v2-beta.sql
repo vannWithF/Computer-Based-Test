@@ -1,292 +1,428 @@
--- HARAP BACA SEBELUM IMPORT!!!
--- KODE DIBAWAH AKAN MENGGANTI (REPLACE) DATABASE DAN TABEL SEBELUMNYA JIKA ADA
--- Mengapa begitu? AGAR TIDAK MENYUSAHKAN DEVELOPER DAN ENGINEER SAAT INGIN MENGIMPOR ULANG DATABASE INI 
--- APALAGI JIKA BANYAK REVISI, MAKANYA DIBUATLAH SEPERTI INI
--- UNTUK MENCEGAH KEHILANGAN DATA DARI DATABASE SEBELUMNYA, JANGAN GEGABAH
--- Terima kasih...
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
 --
--- CBT DATABASE version 2.12 beta
+-- Host: 127.0.0.1
+-- Generation Time: Aug 29, 2024 at 04:27 AM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.3.9
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
-DROP DATABASE cbt_v2_beta;
+-- Database: `cbt-unit_test_erl`
+--
 
-CREATE DATABASE cbt_v2_beta;
+-- --------------------------------------------------------
 
-USE cbt_v2_beta;
+--
+-- Table structure for table `admin`
+--
 
--- id admin dari nama admin dan angka 
--- id = nama + angka increment (dimulai dari 0)
-CREATE TABLE
-  admin (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nama VARCHAR(255),
-    sandi VARCHAR(255)
-  );
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL,
+  `nama` varchar(255) DEFAULT NULL,
+  `sandi` varchar(255) DEFAULT NULL,
+  `panel_admin` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Data dummy
-INSERT INTO
-  admin (nama, sandi)
-VALUES
-  ("admin", "admin");
+--
+-- Dumping data for table `admin`
+--
 
--- id = mapel + lowercase
-CREATE TABLE
-  mapel (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    mapel VARCHAR(255) NOT NULL,
-    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
-  );
+INSERT INTO `admin` (`id`, `nama`, `sandi`, `panel_admin`) VALUES
+(1, 'admin', 'akusukamatcha', NULL),
+(2, 'erl', 'Shiesuta12', NULL),
+(3, 'dimas', 'dimasanjay', NULL);
 
--- Data dummy
-INSERT INTO
-  mapel (id, mapel)
-VALUES
-  ("ppl", "PPL");
+-- --------------------------------------------------------
 
--- id = nama_kelas + angkatan 
-CREATE TABLE
-  kelas (
-    id VARCHAR(255) PRIMARY KEY,
-    nama_kelas VARCHAR(255) NOT NULL,
-    jurusan VARCHAR(255),
-    id_mapel VARCHAR(255),
-    angkatan INT NOT NULL,
-    FOREIGN KEY (id_mapel) REFERENCES mapel (id) ON UPDATE CASCADE ON DELETE SET NULL
-  );
+--
+-- Table structure for table `detail_ujian`
+--
 
--- Data dummy
-INSERT INTO
-  kelas
-VALUES
-  ("xrpl12023", "X RPL 1", "RPL", "ppl", 2023);
+CREATE TABLE `detail_ujian` (
+  `id` varchar(255) NOT NULL,
+  `judul_soal` text NOT NULL,
+  `jumlah_soal` int(11) NOT NULL,
+  `durasi` time NOT NULL,
+  `dibuat_pada` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id_mapel` varchar(255) DEFAULT NULL,
+  `nig_guru` int(11) NOT NULL,
+  `id_ujian` varchar(255) DEFAULT NULL,
+  `id_kelas` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE
-  guru (
-    nig INT PRIMARY KEY NOT NULL,
-    nama VARCHAR(255) NOT NULL,
-    kode_guru VARCHAR(255) NOT NULL,
-    sandi VARCHAR(255) NOT NULL,
-    id_kelas VARCHAR(255),
-    FOREIGN KEY (id_kelas) REFERENCES kelas (id) ON UPDATE CASCADE ON DELETE SET NULL
-  );
+--
+-- Dumping data for table `detail_ujian`
+--
 
--- Data dummy
-INSERT INTO
-  guru
-VALUES
-  (
-    2022304567,
-    "Gogu Jadu",
-    "gogo",
-    "Indojuara1",
-    "xrpl12023"
-  );
+INSERT INTO `detail_ujian` (`id`, `judul_soal`, `jumlah_soal`, `durasi`, `dibuat_pada`, `id_mapel`, `nig_guru`, `id_ujian`, `id_kelas`) VALUES
+('XI-RPL-1-PBO-1214001', 'Pemrograman Berorientasi Objek', 50, '01:00:00', '2024-08-27 12:56:45', 'PBO', 1214001, 'PTS-2024-08-3031', 'XI-RPL-1'),
+('XI-RPL-3-PBO-1214001', 'Pemrograman Berorientasi Objek', 50, '01:00:00', '2024-08-27 11:29:56', 'PBO', 1214001, 'PTS-2024-08-3031', 'XI-RPL-3');
 
-CREATE TABLE
-  siswa (
-    nis INT PRIMARY KEY NOT NULL,
-    nama VARCHAR(255) NOT NULL,
-    panggilan VARCHAR(255) NOT NULL,
-    sandi VARCHAR(255) NOT NULL,
-    is_lulus TINYINT NOT NULL,
-    is_switch_tab TINYINT,
-    id_kelas VARCHAR(255),
-    FOREIGN KEY (id_kelas) REFERENCES kelas (id) ON UPDATE CASCADE ON DELETE SET NULL
-  );
+-- --------------------------------------------------------
 
--- Data dummy
-INSERT INTO
-  siswa
-VALUES
-  (
-    00654382901,
-    "Dante Umumakan",
-    "Dante",
-    "kumaumakan10",
-    0,
-    NULL,
-    "xrpl12023"
-  );
+--
+-- Table structure for table `guru`
+--
 
--- id = ujian + dimulai_pada
-CREATE TABLE
-  ujian (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    ujian VARCHAR(255) NOT NULL,
-    dimulai_pada DATE NOT NULL,
-    berakhir_pada DATE NOT NULL,
-    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
-  );
+CREATE TABLE `guru` (
+  `nig` int(11) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `kode_guru` varchar(255) NOT NULL,
+  `sandi` varchar(255) NOT NULL,
+  `id_kelas` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Data dummy
-INSERT INTO
-  ujian (id, ujian, dimulai_pada, berakhir_pada)
-VALUES
-  ("pas20220201", "PAS", "2022-02-01", "2022-02-07");
+--
+-- Dumping data for table `guru`
+--
 
--- id = mapel + id_ujian
-CREATE TABLE
-  soal (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    judul_soal TEXT NOT NULL,
-    durasi TIME NOT NULL,
-    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
-    id_mapel VARCHAR(255),
-    id_ujian VARCHAR(255),
-    id_kelas VARCHAR(255),
-    nig INT,
-    FOREIGN KEY (id_mapel) REFERENCES mapel (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_ujian) REFERENCES ujian (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_kelas) REFERENCES kelas (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (nig) REFERENCES guru (nig) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+INSERT INTO `guru` (`nig`, `nama`, `kode_guru`, `sandi`, `id_kelas`) VALUES
+(1214001, 'Erl ft Siesta', 'erl', 'Shiesuta12', NULL),
+(1214002, 'Gogu Jadu', 'gogo', 'Indojuara1', NULL),
+(1214003, 'haikal', 'kal', 'alek', NULL);
 
-INSERT INTO
-  soal (
-    id,
-    judul_soal,
-    durasi,
-    id_mapel,
-    id_ujian,
-    id_kelas
-  )
-VALUES
-  (
-    "pplpas20220201",
-    "PAS PPL",
-    "01:00:00",
-    "ppl",
-    "pas20220201",
-    "xrpl12023"
-  );
+-- --------------------------------------------------------
 
-CREATE TABLE
-  pertanyaan (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nomor INT,
-    pertanyaan TEXT NOT NULL,
-    gambar TEXT,
-    id_soal VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id_soal) REFERENCES soal (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+--
+-- Table structure for table `jawaban_pertanyaan`
+--
 
-INSERT INTO
-  pertanyaan (nomor, pertanyaan, id_soal)
-VALUES
-  (1, "Mengapa PPL itu ada?", "pplpas20220201");
+CREATE TABLE `jawaban_pertanyaan` (
+  `id` varchar(255) NOT NULL,
+  `id_pertanyaan` varchar(255) NOT NULL,
+  `isi_jawaban` text NOT NULL,
+  `id_detail_ujian` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- id = id_pertanyan + pilihan
-CREATE TABLE
-  jawaban (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    id_pertanyaan INT NOT NULL,
-    pilihan CHAR(1) NOT NULL,
-    isi_jawaban TEXT NOT NULL,
-    gambar TEXT,
-    benar TINYINT NOT NULL,
-    FOREIGN KEY (id_pertanyaan) REFERENCES pertanyaan (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+--
+-- Dumping data for table `jawaban_pertanyaan`
+--
 
--- data dummy
-INSERT INTO
-  jawaban
-VALUES
-  (
-    "1a",
-    1,
-    "a",
-    "Untuk memudahkan Developer dalam mengembangkan aplikasi",
-    NULL,
-    0
-  );
+INSERT INTO `jawaban_pertanyaan` (`id`, `id_pertanyaan`, `isi_jawaban`, `id_detail_ujian`) VALUES
+('CDJOzcXwAG', 'CDJOzcXwAG', '\"{\\\"jawaban_yang_di_pilih\\\":\\\"Javascript memiliki tipe data Null, Undefined, Float dan Integer\\\",\\\"jawaban_alphabet\\\":\\\"C\\\"}\"', 'XI-RPL-3-PBO-1214001'),
+('d5gFkh-FpI', 'd5gFkh-FpI', '\"{\\\"jawaban_yang_di_pilih\\\":\\\"Javascript memiliki tipe data Null, Undefined, Float dan Integer\\\",\\\"jawaban_alphabet\\\":\\\"C\\\"}\"', 'XI-RPL-1-PBO-1214001'),
+('DxPx4N7jAr', 'DxPx4N7jAr', '\"{\\\"jawaban_yang_di_pilih\\\":\\\"Application Programming Interface\\\",\\\"jawaban_alphabet\\\":\\\"A\\\"}\"', 'XI-RPL-3-PBO-1214001'),
+('FxA-iyLFpk', 'FxA-iyLFpk', '\"{\\\"jawaban_yang_di_pilih\\\":\\\"JS\\\",\\\"jawaban_alphabet\\\":\\\"B\\\"}\"', 'XI-RPL-3-PBO-1214001'),
+('ijXpWaMf53', 'ijXpWaMf53', '\"{\\\"jawaban_yang_di_pilih\\\":\\\"JS\\\",\\\"jawaban_alphabet\\\":\\\"B\\\"}\"', 'XI-RPL-1-PBO-1214001'),
+('oxIi4NzOd7', 'oxIi4NzOd7', '\"{\\\"jawaban_yang_di_pilih\\\":\\\"Application Programming Interface\\\",\\\"jawaban_alphabet\\\":\\\"A\\\"}\"', 'XI-RPL-1-PBO-1214001');
 
-CREATE TABLE
-  nilai_siswa (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nis INT,
-    id_soal VARCHAR(255),
-    nilai_total INT,
-    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
-    FOREIGN KEY (nis) REFERENCES siswa (nis) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_soal) REFERENCES soal (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+-- --------------------------------------------------------
 
-INSERT INTO
-  nilai_siswa (nis, id_soal, nilai_total)
-VALUES
-  (00654382901, "pplpas20220201", NULL);
+--
+-- Table structure for table `jawaban_siswa`
+--
 
--- id = bilangan dimulai dari 10
-CREATE TABLE
-  jawaban_siswa (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_nilai INT,
-    id_jawaban VARCHAR(255),
-    nilai_per_jawaban INT DEFAULT 1,
-    FOREIGN KEY (id_nilai) REFERENCES nilai_siswa (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_jawaban) REFERENCES jawaban (id) ON UPDATE CASCADE ON DELETE SET NULL
-  );
+CREATE TABLE `jawaban_siswa` (
+  `id` int(11) NOT NULL,
+  `nis` int(11) NOT NULL,
+  `id_pertanyaan` varchar(255) NOT NULL,
+  `jawaban` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`jawaban`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO
-  jawaban_siswa
-VALUES
-  (10, 1, "1a", 1);
+-- --------------------------------------------------------
 
-CREATE TABLE
-  rel_guru_mapel (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    nig INT NOT NULL,
-    id_mapel VARCHAR(255) NOT NULL,
-    FOREIGN KEY (nig) REFERENCES guru (nig) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_mapel) REFERENCES mapel (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+--
+-- Table structure for table `kelas`
+--
 
-INSERT INTO
-  rel_guru_mapel
-VALUES
-  ("2022304567ppl", 2022304567, "ppl");
+CREATE TABLE `kelas` (
+  `id` varchar(255) NOT NULL,
+  `kelas` enum('X','XI','XII') NOT NULL,
+  `jurusan` enum('RPL','TKJ','MM','PKM') NOT NULL,
+  `nomor_kelas` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE
-  rel_kelas_mapel (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    id_kelas VARCHAR(255) NOT NULL,
-    id_mapel VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id_kelas) REFERENCES kelas (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_mapel) REFERENCES mapel (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+--
+-- Dumping data for table `kelas`
+--
 
-INSERT INTO
-  rel_kelas_mapel
-VALUES
-  ("xrpl12023ppl", "xrpl12023", "ppl");
+INSERT INTO `kelas` (`id`, `kelas`, `jurusan`, `nomor_kelas`) VALUES
+('XI-RPL-1', 'XI', 'RPL', 1),
+('XI-RPL-3', 'XI', 'RPL', 3),
+('XII-RPL-1', 'XII', 'RPL', 1),
+('XII-RPL-2', 'XII', 'RPL', 2),
+('XII-RPL-3', 'XII', 'RPL', 3);
 
-CREATE TABLE
-  rel_guru_kelas (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    nig INT NOT NULL,
-    id_kelas VARCHAR(255) NOT NULL,
-    FOREIGN KEY (nig) REFERENCES guru (nig) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_kelas) REFERENCES kelas (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+-- --------------------------------------------------------
 
-INSERT INTO
-  rel_guru_kelas
-VALUES
-  ("2022304567xrpl12023", 2022304567, "xrpl12023");
+--
+-- Table structure for table `mapel`
+--
 
-CREATE TABLE
-  rel_soal_kelas (
-    id VARCHAR(255) PRIMARY KEY NOT NULL,
-    id_soal VARCHAR(255) NOT NULL,
-    id_kelas VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id_soal) REFERENCES soal (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (id_kelas) REFERENCES kelas (id) ON UPDATE CASCADE ON DELETE CASCADE
-  );
+CREATE TABLE `mapel` (
+  `id` varchar(255) NOT NULL,
+  `mapel` varchar(255) NOT NULL,
+  `dibuat_pada` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO
-  rel_soal_kelas
-VALUES
-  (
-    "pplpas20220201xrpl12023",
-    "pplpas20220201",
-    "xrpl12023"
-  );
+--
+-- Dumping data for table `mapel`
+--
+
+INSERT INTO `mapel` (`id`, `mapel`, `dibuat_pada`) VALUES
+('PBO', 'PBO', '2024-08-19 10:00:00'),
+('PPL', 'PPL', '2024-08-14 12:01:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nilai_siswa`
+--
+
+CREATE TABLE `nilai_siswa` (
+  `id` int(11) NOT NULL,
+  `nis` int(11) NOT NULL,
+  `hasil` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`hasil`)),
+  `detil_nilai` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`detil_nilai`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `nilai_siswa`
+--
+
+INSERT INTO `nilai_siswa` (`id`, `nis`, `hasil`, `detil_nilai`) VALUES
+(1, 10201, '0', '{\"id_pertanyaan\":1,\"benar\":false,\"jawaban_siswa\":\"B\",\"jawaban_benar\":\"A\"}'),
+(2, 10202, '100', '{\"id_pertanyaan\":1,\"benar\":true,\"jawaban_siswa\":\"A\",\"jawaban_benar\":\"A\"}');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pertanyaan`
+--
+
+CREATE TABLE `pertanyaan` (
+  `id` varchar(255) NOT NULL,
+  `nomor` varchar(255) DEFAULT NULL,
+  `pertanyaan` text NOT NULL,
+  `gambar` text DEFAULT NULL,
+  `id_detail_ujian` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `pertanyaan`
+--
+
+INSERT INTO `pertanyaan` (`id`, `nomor`, `pertanyaan`, `gambar`, `id_detail_ujian`) VALUES
+('CDJOzcXwAG', '2', 'Manakah yang tidak benar dari Pernyataan tentang Javascript berikut ini?...', NULL, 'XI-RPL-3-PBO-1214001'),
+('d5gFkh-FpI', '2', 'Manakah yang tidak benar dari Pernyataan tentang Javascript berikut ini?...', NULL, 'XI-RPL-1-PBO-1214001'),
+('DxPx4N7jAr', '1', 'Gambar diatas merupakan gambar bertuliskan ‘API’, Apa itu API? …', NULL, 'XI-RPL-3-PBO-1214001'),
+('FxA-iyLFpk', '3', 'Manakah gambar bahasa pemrograman yang dipakai untuk pemrograman di sisi Web?...', NULL, 'XI-RPL-3-PBO-1214001'),
+('ijXpWaMf53', '3', 'Manakah gambar bahasa pemrograman yang dipakai untuk pemrograman di sisi Web?...', NULL, 'XI-RPL-1-PBO-1214001'),
+('oxIi4NzOd7', '1', 'Gambar diatas merupakan gambar bertuliskan ‘API’, Apa itu API? …', NULL, 'XI-RPL-1-PBO-1214001');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `siswa`
+--
+
+CREATE TABLE `siswa` (
+  `nis` int(11) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `panggilan` varchar(255) NOT NULL,
+  `sandi` varchar(255) NOT NULL,
+  `is_lulus` tinyint(4) NOT NULL,
+  `is_switch_tab` tinyint(4) DEFAULT NULL,
+  `id_kelas` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `siswa`
+--
+
+INSERT INTO `siswa` (`nis`, `nama`, `panggilan`, `sandi`, `is_lulus`, `is_switch_tab`, `id_kelas`) VALUES
+(10201, 'John Anak Baik', 'John', 'alek', 0, NULL, 'XII-RPL-3'),
+(10202, 'Dante Umumakan', 'Dante', 'kumaumakan10', 0, NULL, 'XII-RPL-3'),
+(10203, 'dimas', 'mas', 'legion', 0, 0, 'XI-RPL-3');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ujian`
+--
+
+CREATE TABLE `ujian` (
+  `id` varchar(255) NOT NULL,
+  `ujian` varchar(255) NOT NULL,
+  `dimulai_pada` date NOT NULL,
+  `berakhir_pada` date NOT NULL,
+  `dibuat_pada` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ujian`
+--
+
+INSERT INTO `ujian` (`id`, `ujian`, `dimulai_pada`, `berakhir_pada`, `dibuat_pada`) VALUES
+('PTS-2024-08-3031', 'PTS', '2024-08-30', '2024-08-31', '2024-08-14 12:01:16');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `detail_ujian`
+--
+ALTER TABLE `detail_ujian`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_mapel` (`id_mapel`),
+  ADD KEY `id_ujian` (`id_ujian`),
+  ADD KEY `id_kelas` (`id_kelas`),
+  ADD KEY `nig_guru` (`nig_guru`);
+
+--
+-- Indexes for table `guru`
+--
+ALTER TABLE `guru`
+  ADD PRIMARY KEY (`nig`),
+  ADD KEY `id_kelas` (`id_kelas`);
+
+--
+-- Indexes for table `jawaban_pertanyaan`
+--
+ALTER TABLE `jawaban_pertanyaan`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_detail_ujian` (`id_detail_ujian`),
+  ADD KEY `id_pertanyaan` (`id_pertanyaan`);
+
+--
+-- Indexes for table `jawaban_siswa`
+--
+ALTER TABLE `jawaban_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `nis` (`nis`),
+  ADD KEY `id_pertanyaan` (`id_pertanyaan`);
+
+--
+-- Indexes for table `kelas`
+--
+ALTER TABLE `kelas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mapel`
+--
+ALTER TABLE `mapel`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `nilai_siswa`
+--
+ALTER TABLE `nilai_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `nilai_siswa_ibfk_1` (`nis`);
+
+--
+-- Indexes for table `pertanyaan`
+--
+ALTER TABLE `pertanyaan`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_soal` (`id_detail_ujian`);
+
+--
+-- Indexes for table `siswa`
+--
+ALTER TABLE `siswa`
+  ADD PRIMARY KEY (`nis`),
+  ADD KEY `id_kelas` (`id_kelas`);
+
+--
+-- Indexes for table `ujian`
+--
+ALTER TABLE `ujian`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `jawaban_siswa`
+--
+ALTER TABLE `jawaban_siswa`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `nilai_siswa`
+--
+ALTER TABLE `nilai_siswa`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `detail_ujian`
+--
+ALTER TABLE `detail_ujian`
+  ADD CONSTRAINT `detail_ujian_ibfk_1` FOREIGN KEY (`id_mapel`) REFERENCES `mapel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `detail_ujian_ibfk_2` FOREIGN KEY (`id_ujian`) REFERENCES `ujian` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `detail_ujian_ibfk_3` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `detail_ujian_ibfk_4` FOREIGN KEY (`nig_guru`) REFERENCES `guru` (`nig`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `guru`
+--
+ALTER TABLE `guru`
+  ADD CONSTRAINT `guru_ibfk_1` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `jawaban_pertanyaan`
+--
+ALTER TABLE `jawaban_pertanyaan`
+  ADD CONSTRAINT `jawaban_pertanyaan_ibfk_2` FOREIGN KEY (`id_detail_ujian`) REFERENCES `detail_ujian` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `jawaban_pertanyaan_ibfk_3` FOREIGN KEY (`id_pertanyaan`) REFERENCES `pertanyaan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `jawaban_siswa`
+--
+ALTER TABLE `jawaban_siswa`
+  ADD CONSTRAINT `jawaban_siswa_ibfk_2` FOREIGN KEY (`nis`) REFERENCES `siswa` (`nis`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `jawaban_siswa_ibfk_3` FOREIGN KEY (`id_pertanyaan`) REFERENCES `pertanyaan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `nilai_siswa`
+--
+ALTER TABLE `nilai_siswa`
+  ADD CONSTRAINT `nilai_siswa_ibfk_1` FOREIGN KEY (`nis`) REFERENCES `siswa` (`nis`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `pertanyaan`
+--
+ALTER TABLE `pertanyaan`
+  ADD CONSTRAINT `pertanyaan_ibfk_1` FOREIGN KEY (`id_detail_ujian`) REFERENCES `detail_ujian` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `siswa`
+--
+ALTER TABLE `siswa`
+  ADD CONSTRAINT `siswa_ibfk_1` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
