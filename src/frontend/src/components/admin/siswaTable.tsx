@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+// import settings from "/assets/setting.png"
 
 interface Teacher {
   id: number;
@@ -22,26 +23,32 @@ const Teacher: React.FC = () => {
     <>
         <div className="flex justify-center py-36">
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-purple-100">
+            <table className="min-w-full">
               <thead>
-                <tr className="border border-black">
+                <tr className="border border-black bg-purple2-0">
                   <th className="px-12 py-1 text-center text-xs font-medium text-black uppercase tracking-wider ">NO</th>
                   <th className="px-6 py-1 text-center text-xs font-medium text-black uppercase tracking-wider">NIS</th>
                   <th className="px-6 py-1 text-center text-xs font-medium text-black uppercase tracking-wider">Nama</th>
                   <th className="px-9 py-1 text-center text-xs font-medium text-black uppercase tracking-wider">Sandi</th>
                   <th className="px-6 py-1 text-center text-xs font-medium text-black uppercase tracking-wider">Kelas</th>
-                  <button className="absolute mx-6 px-6 border border-black">ADD</button>
+                  {/* <th className="px-6 py-1 text-center text-xs font-medium text-black uppercase tracking-wider">Action</th> */}
+                  {/* <button className="absolute mx-6 px-6 bg-purple2-0 hover:bg-purple-300 rounded-md">ADD</button> */}
                 </tr>
               </thead>
               <br/>
               <tbody>
                 {teachers.map((teacher, index) => (
-                  <tr key={teacher.id}>
+                  <tr key={teacher.id} className="bg-purple2-0">
                     <td className="px-6 py-2 text-center border border-black text-sm font-medium text-gray-900">{index + 1}</td>
                     <td className="px-6 py-2 text-center border border-black text-sm text-black">{teacher.nis}</td>
                     <td className="px-6 py-2 text-center border border-black text-sm text-black">{teacher.nama}</td>
                     <td className="px-6 py-2 text-center border border-black text-sm text-black">{teacher.sandi}</td>
                     <td className="px-6 py-2 text-center border border-black text-sm text-black">{teacher.id_kelas}</td>
+                    {/* <td className="px-6 py-2 text-left border border-black text-sm text-black">
+                      <button className="bg-purple2-0 hover:bg-purple-300 px-4 flex rounded-md">
+                        Ubah <img src={settings} className="size-3 ml-2 my-1" alt="" />
+                      </button>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

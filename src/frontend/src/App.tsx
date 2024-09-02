@@ -11,6 +11,7 @@ import InputQuestion from './pages/questionInput-pages.js'
 import AdminPages from './pages/admin/admin.js'
 import GuruAdminPages from './pages/admin/guruPages.js';
 import SiswaAdminPages from './pages/admin/siswaPages.js';
+import Importfile from './pages/importPages.js';
 
 //TESTING CODE!
 import InputQuestionTest from './test/inputSoalTest.js';
@@ -39,7 +40,7 @@ const App: React.FC = () => {
       <Route path="/admin" element={<AdminPages />} />
       <Route path="/admin/guru" element={<GuruAdminPages />} />
       <Route path="/admin/siswa" element={<SiswaAdminPages />} />
-      
+      <Route path='/admin/import' element={<Importfile/>} />
     </Routes>
   );
 }

@@ -11,6 +11,7 @@ const SiswaAdminPages: React.FC = () => {
         isOpen={true}
         items={[
           { name: "Beranda", href: "/admin" },
+          
           { name: "Guru", href: "/admin/guru" },
           { name: "Siswa", href: "/admin/siswa" },
           { name: "Mapel", href: "/admin/mapel" },
